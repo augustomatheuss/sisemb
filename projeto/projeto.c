@@ -10,31 +10,35 @@
 
 
 /* Funções que vocês utilizarão */
+/* Você pode revisar a descrição dos comandos junto ao datasheet */
 
 /* String a ser utilizada pela função enviarTexto */
-char texto[32];
+char texto[64];
 
 /* Inicializa AD */
 void initAD(void)
 {
-  /* ADC configuração: Voltagem de Referência = AVCC. */
-  ADMUX |= (1<<REFS0);
-  /* Canal de Entrada = ADC0. ADC Habilitado. */ 
-  ADCSRA  |= (1<<ADEN);
-  /* ADC Prescaler = 128 (125 KHz). */
-  ADCSRA  |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
+	/* ADC configuração: Voltagem de Referência = AVCC. */
+	ADMUX |= (1<<REFS0);
+	/* Canal de Entrada = ADC0. ADC Habilitado. */ 
+	ADCSRA  |= (1<<ADEN);
+	/* ADC Prescaler = 128 (125 KHz). */
+	ADCSRA  |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2);
 }
 
-/* Leitura de valor AD */
+/* Leitura de valor AD na porta ADC0 */
+/* A port ADC0 é a PC0 no MCU e analog in 0 no Arduino Uno */
 unsigned int getAD()
 {
-  /* Inicia Conversão */
-  ADCSRA |= 0b01000000;
+	/* Inicia Conversão */
+	ADCSRA |= 0b01000000;
 
-  /* Espera a Conversão Acabar */
-  while ( !(ADCSRA & (1 << ADIF)) ){}
-    
-  return ADC;
+	/* Espera a Conversão Acabar */
+	while ( !(ADCSRA & (1 << ADIF)) ){}
+   
+	/* ADC une os valores dos registradores ADCH e ADCL */
+	/* Guarda o valor da conversão AD */
+	return ADC;
 }
 
 /* Inicializa a USART */
@@ -63,27 +67,52 @@ unsigned char enviarTexto()
   }
 }
 
+/* Inicializa PWM - Utilizando Contador 0, porta OC0A */
+/* A porta OC0A é a PD6 no MCU e porta 6 no Arduino Uno */
+void initPWM(void)
+{
+	/* Fast PWM - zera na comparação com OC0A */
+	TCCR0A |=  (1<<COM0A1);
+	/* Fast PWM - TOP = OCRA, Atualização = OCR0A, Overflow em TOP */
+	TCCR0A |= (1<<WGM00)| (1<<WGM01);
+	TCCR0B |= (1<<WGM02);
+	/* Prescale = clock_IO / 1 */
+	TCCR0B |= (1<<CS00);
+}
+
+/* Confere um valor de 0 a 100 (%) para o PWM */
+void setPWM(unsigned char level)
+{
+	OCR0A = ((unsigned char) ((((double)level)/100.0)*255.0));
+}
+
 /****************************/
 
 
 /* Código principal */
 int main()
 {
-  /* Configurações iniciais */
-  unsigned int ad;
+	/* Configurações iniciais */
+	unsigned int ad;
   
-  initAD();
-  initUSART();
+	initAD();
+	initUSART();
   
-  /* O loop do seu sistema */
-  while(1)
-  {
-    ad = getAD();
-    sprintf(texto,"AD: %d\n", (int)ad);
-    enviarTexto();
-    
-    _delay_ms(500);
-  }
+	/* Mensagem inicial */
+	sprintf(texto,"Primeira parte do nosso projeto!\n\n");
+	_delay_ms(3000);
+
+	/* O loop do seu sistema */
+	while(1)
+	{
+		ad = getAD();
+		sprintf(texto,"AD: %d\n", (int)ad);
+		enviarTexto();
+		
+		/* Espera 500 ms */
+		_delay_ms(500);
+	}
   
-  return 0;
+	return 0;
 }
+
