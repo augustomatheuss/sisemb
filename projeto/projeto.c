@@ -94,9 +94,9 @@ void initPWM2(void)
 	/* Fast PWM - zera na comparação com OC0A */
 	TCCR2A |=  (1<<COM2A1);
 	/* Fast PWM - TOP = 0xFF, Atualização = OCR0A, Overflow em TOP */
-	TCCR2A |= (1<<WGM00)| (1<<WGM01);
+	TCCR2A |= (1<<WGM20)| (1<<WGM21);
 	/* Prescale = clock_IO / 1 */
-	TCCR2B |= (1<<CS00);
+	TCCR2B |= (1<<CS20);
     /* Direção de saída para a porta PD6 */
     DDRB |= 0b00001000;
 }
