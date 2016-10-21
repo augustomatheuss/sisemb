@@ -44,27 +44,27 @@ unsigned int getAD()
 /* Inicializa a USART */
 void initUSART(void)
 {
-  /* USART - Character Size - 8, */
-  /* Stop Bit - 1, Baud Rate 9600, No Parity */
-  UCSR0B |= (1<<RXEN0) | (1 << TXEN0);
-  UCSR0C |= (1<<UCSZ01) | (1 << UCSZ00) | (1 << USBS0) ;
+	/* USART - Character Size - 8, */
+	/* Stop Bit - 1, Baud Rate 9600, No Parity */
+	UCSR0B |= (1<<RXEN0) | (1 << TXEN0);
+	UCSR0C |= (1<<UCSZ01) | (1 << UCSZ00) | (1 << USBS0) ;
   
-  /* Baud Rate para f_osc = 16MHz */
-  unsigned int ubrr = 207; /* 103 */
-  UBRR0H = ( unsigned char ) ( ubrr>>8) ;
-  UBRR0L = ( unsigned char ) ubrr ;
+	/* Baud Rate para f_osc = 16MHz */
+	unsigned int ubrr = 207; /* 103 */
+	UBRR0H = ( unsigned char ) ( ubrr>>8) ;
+	UBRR0L = ( unsigned char ) ubrr ;
 }
 
 /* Envia a string "texto" (variável global) via USART */
 unsigned char enviarTexto()
 {
-  unsigned char c = 0;
-  while( texto[c] != '\0' )
-  {
-  while (!( UCSR0A & (1<<UDRE0) )) ;
-  UDR0 = texto[c];
-  c++;
-  }
+	unsigned char c = 0;
+	while( texto[c] != '\0' )
+	{
+		while (!( UCSR0A & (1<<UDRE0) )) ;
+		UDR0 = texto[c];
+		c++;
+	}
 }
 
 /* Inicializa PWM - Utilizando Contador 0, porta OC0A */
@@ -73,17 +73,18 @@ void initPWM(void)
 {
 	/* Fast PWM - zera na comparação com OC0A */
 	TCCR0A |=  (1<<COM0A1);
-	/* Fast PWM - TOP = OCRA, Atualização = OCR0A, Overflow em TOP */
+	/* Fast PWM - TOP = 0xFF, Atualização = OCR0A, Overflow em TOP */
 	TCCR0A |= (1<<WGM00)| (1<<WGM01);
-	TCCR0B |= (1<<WGM02);
 	/* Prescale = clock_IO / 1 */
 	TCCR0B |= (1<<CS00);
+    /* Direção de saída para a porta PD6 */
+    DDRD |= 0b01000000;
 }
 
 /* Confere um valor de 0 a 100 (%) para o PWM */
 void setPWM(unsigned char level)
 {
-	OCR0A = ((unsigned char) ((((double)level)/100.0)*255.0));
+	OCR0A = ((unsigned char) ((((float)level)/100.0)*255.0));
 }
 
 /****************************/
@@ -100,6 +101,7 @@ int main()
   
 	/* Mensagem inicial */
 	sprintf(texto,"Primeira parte do nosso projeto!\n\n");
+	enviarTexto();
 	_delay_ms(3000);
 
 	/* O loop do seu sistema */

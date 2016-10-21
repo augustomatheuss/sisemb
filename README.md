@@ -8,3 +8,5 @@ http://www.atmel.com/images/Atmel-8271-8-bit-AVR-Microcontroller-ATmega48A-48PA-
 * Esquema da placa Arduino Uno  
 https://www.arduino.cc/en/uploads/Main/Arduino_Uno_Rev3-schematic.pdf  
   
+* Ultrassom exemplo  
+https://github.com/augustomatheuss/mcu-examples/blob/master/avr/ultrasonic-sensor-ATmega48A-PA-88A-PA-168A-PA-328-P.c  
