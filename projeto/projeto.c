@@ -87,6 +87,25 @@ void setPWM(unsigned char level)
 	OCR0A = ((unsigned char) ((((float)level)/100.0)*255.0));
 }
 
+/* Inicializa PWM 2 - Utilizando Contador 0, porta OC0A */
+/* A porta OC2A é a PB3 no MCU e porta 11 no Arduino Uno */
+void initPWM2(void)
+{
+	/* Fast PWM - zera na comparação com OC0A */
+	TCCR2A |=  (1<<COM2A1);
+	/* Fast PWM - TOP = 0xFF, Atualização = OCR0A, Overflow em TOP */
+	TCCR2A |= (1<<WGM00)| (1<<WGM01);
+	/* Prescale = clock_IO / 1 */
+	TCCR2B |= (1<<CS00);
+    /* Direção de saída para a porta PD6 */
+    DDRB |= 0b00001000;
+}
+
+/* Confere um valor de 0 a 100 (%) para o PWM */
+void setPWM2(unsigned char level)
+{
+	OCR2A = ((unsigned char) ((((float)level)/100.0)*255.0));
+}
 /****************************/
 
 
