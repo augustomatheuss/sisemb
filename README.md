@@ -5,8 +5,6 @@
 https://augustomatheuss.github.io/slides/pdf/sisemb1.pdf  
 * Slide 2  
 https://augustomatheuss.github.io/slides/pdf/sisemb4.pdf  
-* Slide 3  
-https://augustomatheuss.github.io/slides/pdf/sisemb5.pdf  
 
 ## Fotografias do Minicurso  
 https://drive.google.com/drive/folders/0BxdjBoOKQBxoTHFnUXRrWVFtR2M?usp=sharing  
